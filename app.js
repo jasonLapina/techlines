@@ -8,10 +8,12 @@ import session from "express-session";
 import passport from "./middleware/passportConfig.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 
 connectToDb();
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
@@ -32,7 +34,6 @@ app.use(
 
 // Initialize passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);

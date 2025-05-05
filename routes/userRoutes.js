@@ -76,7 +76,8 @@ const registerUser = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         active: user.active,
-        message: "Registration successful. Please check your email to verify your account.",
+        message:
+          "Registration successful. Please check your email to verify your account.",
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
@@ -107,7 +108,9 @@ const verifyEmail = async (req, res) => {
     user.emailVerificationExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully. You can now login." });
+    res
+      .status(200)
+      .json({ message: "Email verified successfully. You can now login." });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
@@ -155,7 +158,10 @@ const resetPasswordConfirm = async (req, res) => {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: "Password reset successful. You can now login with your new password." });
+    res.status(200).json({
+      message:
+        "Password reset successful. You can now login with your new password.",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
@@ -190,19 +196,16 @@ const getUserProfile = async (req, res) => {
 
 // OAuth success handler
 const oAuthSuccessHandler = (req, res) => {
-  const { _id, name, email, isAdmin, active, firstLogin, createdAt, googleImage } = req.user;
+  const token = generateToken(req.user._id);
 
-  res.json({
-    _id,
-    name,
-    email,
-    isAdmin,
-    token: generateToken(_id),
-    active,
-    firstLogin,
-    createdAt,
-    googleImage,
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
   });
+
+  res.redirect("http://localhost:3000");
 };
 
 // Routes
@@ -215,30 +218,36 @@ userRoutes.route("/profile").get(protect, getUserProfile);
 
 // OAuth Routes
 // Google
-userRoutes.route("/auth/google").get(
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+userRoutes
+  .route("/auth/google")
+  .get(passport.authenticate("google", { scope: ["profile", "email"] }));
 userRoutes.route("/auth/google/callback").get(
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  oAuthSuccessHandler
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+  }),
+  oAuthSuccessHandler,
 );
 
 // Facebook
-userRoutes.route("/auth/facebook").get(
-  passport.authenticate("facebook", { scope: ["email"] })
-);
-userRoutes.route("/auth/facebook/callback").get(
-  passport.authenticate("facebook", { failureRedirect: "/login" }),
-  oAuthSuccessHandler
-);
+userRoutes
+  .route("/auth/facebook")
+  .get(passport.authenticate("facebook", { scope: ["email"] }));
+userRoutes
+  .route("/auth/facebook/callback")
+  .get(
+    passport.authenticate("facebook", { failureRedirect: "/login" }),
+    oAuthSuccessHandler,
+  );
 
 // GitHub
-userRoutes.route("/auth/github").get(
-  passport.authenticate("github", { scope: ["user:email"] })
-);
-userRoutes.route("/auth/github/callback").get(
-  passport.authenticate("github", { failureRedirect: "/login" }),
-  oAuthSuccessHandler
-);
+userRoutes
+  .route("/auth/github")
+  .get(passport.authenticate("github", { scope: ["user:email"] }));
+userRoutes
+  .route("/auth/github/callback")
+  .get(
+    passport.authenticate("github", { failureRedirect: "/login" }),
+    oAuthSuccessHandler,
+  );
 
 export default userRoutes;
