@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import connectToDb from "./database.js";
 import express from "express";
 import cors from "cors";
@@ -7,24 +9,26 @@ import passport from "./middleware/passportConfig.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
-dotenv.config();
-
 connectToDb();
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: process.env.BASE_URL,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.BASE_URL,
+    credentials: true,
+  }),
+);
 
 // Session configuration
-app.use(session({
-  secret: process.env.JWT_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production' }
-}));
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === "production" },
+  }),
+);
 
 // Initialize passport
 app.use(passport.initialize());

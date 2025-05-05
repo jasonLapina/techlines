@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
@@ -62,8 +65,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // Facebook OAuth Strategy
@@ -99,7 +102,9 @@ passport.use(
         // Create new user
         const newUser = await User.create({
           name: profile.displayName,
-          email: profile.emails ? profile.emails[0].value : `${profile.id}@facebook.com`,
+          email: profile.emails
+            ? profile.emails[0].value
+            : `${profile.id}@facebook.com`,
           facebookId: profile.id,
           isAdmin: false,
           active: true, // Facebook accounts are pre-verified
@@ -109,8 +114,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // GitHub OAuth Strategy
@@ -132,9 +137,10 @@ passport.use(
         }
 
         // Get primary email from GitHub
-        const primaryEmail = profile.emails && profile.emails.length > 0 
-          ? profile.emails[0].value 
-          : `${profile.id}@github.com`;
+        const primaryEmail =
+          profile.emails && profile.emails.length > 0
+            ? profile.emails[0].value
+            : `${profile.id}@github.com`;
 
         // Check if user exists with the same email
         user = await User.findOne({ email: primaryEmail });
@@ -159,8 +165,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 export default passport;
