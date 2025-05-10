@@ -216,6 +216,7 @@ userRoutes.route("/logout").get((req, res) => {
     secure: false,
     sameSite: "Lax",
   });
+  res.sendStatus(200);
 });
 
 userRoutes.route("/register").post(registerUser);
