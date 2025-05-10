@@ -213,9 +213,11 @@ userRoutes.route("/login").post(loginUser);
 userRoutes.route("/logout").get((req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
+    secure: false,
+    sameSite: "Lax",
   });
-  res.status(200);
 });
+
 userRoutes.route("/register").post(registerUser);
 userRoutes.route("/verify-email/:token").get(verifyEmail);
 userRoutes.route("/reset-password-request").post(resetPasswordRequest);
