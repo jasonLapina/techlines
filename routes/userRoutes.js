@@ -211,7 +211,9 @@ const oAuthSuccessHandler = (req, res) => {
 // Routes
 userRoutes.route("/login").post(loginUser);
 userRoutes.route("/logout").get((req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+  });
   res.status(200);
 });
 userRoutes.route("/register").post(registerUser);
