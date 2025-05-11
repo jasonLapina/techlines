@@ -9,6 +9,7 @@ import passport from "./middleware/passportConfig.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 connectToDb();
 
@@ -37,6 +38,7 @@ app.use(passport.initialize());
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 const port = 3001;
 app.listen(port, () => {
