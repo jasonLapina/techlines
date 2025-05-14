@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 
-// Add or update a review
+// TODO: FIX NUM_REVIEWS AND RATING CALCULATION
 export const addReview = async (req, res) => {
   try {
     const { userId, review, productId } = req.body;
