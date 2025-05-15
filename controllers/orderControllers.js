@@ -10,6 +10,18 @@ export const postOrder = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error, payload: req.body });
   }
+};
 
-  //   save a new product to the db
+export const getOrders = async (req, res) => {
+  try {
+    // get userID
+    const userID = req.user._id;
+
+    // get orders where user value is equal to userID
+    const orders = await Order.find({ user: userID });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
